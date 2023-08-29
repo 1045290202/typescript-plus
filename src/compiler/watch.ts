@@ -106,6 +106,8 @@ import {
     whitespaceOrMapCommentRegExp,
     WriteFileCallback,
 } from "./_namespaces/ts";
+import * as sorting from "./sorting";
+import * as ts from "./_namespaces/ts";
 
 const sysFormatDiagnosticsHost: FormatDiagnosticsHost | undefined = sys ? {
     getCurrentDirectory: () => sys.getCurrentDirectory(),
@@ -636,8 +638,21 @@ export function emitFilesAndReportErrorsAndGetExitStatus<T extends BuilderProgra
     writeFile?: WriteFileCallback,
     cancellationToken?: CancellationToken,
     emitOnlyDtsFiles?: boolean,
-    customTransformers?: CustomTransformers
+    customTransformers?: CustomTransformers,
+    options?: CompilerOptions,
 ) {
+    let exitStatus: ExitStatus = ExitStatus.Success;
+    if (options?.reorderFiles) {
+        let sortResult = sorting.reorderSourceFiles(program as Program);
+        if (sortResult.circularReferences.length > 0) {
+            let errorText: string = "";
+            errorText += "error: Find circular dependencies when reordering file :" + ts.sys.newLine;
+            errorText += "    at " + sortResult.circularReferences.join(ts.sys.newLine + "    at ") + ts.sys.newLine + "    at ...";
+            sys.write(errorText + sys.newLine);
+            exitStatus = ExitStatus.DiagnosticsPresent_OutputsGenerated;
+        }
+    }
+    
     const { emitResult, diagnostics } = emitFilesAndReportErrors(
         program,
         reportDiagnostic,
@@ -648,17 +663,17 @@ export function emitFilesAndReportErrorsAndGetExitStatus<T extends BuilderProgra
         emitOnlyDtsFiles,
         customTransformers
     );
-
+    
     if (emitResult.emitSkipped && diagnostics.length > 0) {
         // If the emitter didn't emit anything, then pass that value along.
-        return ExitStatus.DiagnosticsPresent_OutputsSkipped;
+        exitStatus = ExitStatus.DiagnosticsPresent_OutputsSkipped;
     }
     else if (diagnostics.length > 0) {
         // The emitter emitted something, inform the caller if that happened in the presence
         // of diagnostics or not.
-        return ExitStatus.DiagnosticsPresent_OutputsGenerated;
+        exitStatus = ExitStatus.DiagnosticsPresent_OutputsGenerated;
     }
-    return ExitStatus.Success;
+    return exitStatus;
 }
 
 /** @internal */

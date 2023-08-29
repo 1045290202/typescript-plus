@@ -703,6 +703,8 @@ declare namespace ts {
         readonly exclamationToken?: ExclamationToken;
         readonly type?: TypeNode;
         readonly initializer?: Expression;
+        callerList?: string[];
+        delayInitializerList?: Expression[];
     }
     interface VariableDeclarationList extends Node {
         readonly kind: SyntaxKind.VariableDeclarationList;
@@ -1555,6 +1557,7 @@ declare namespace ts {
         readonly typeParameters?: NodeArray<TypeParameterDeclaration>;
         readonly heritageClauses?: NodeArray<HeritageClause>;
         readonly members: NodeArray<ClassElement>;
+        typeNames?: string[];
     }
     interface ClassDeclaration extends ClassLikeDeclarationBase, DeclarationStatement {
         readonly kind: SyntaxKind.ClassDeclaration;
@@ -3179,6 +3182,9 @@ declare namespace ts {
         verbatimModuleSyntax?: boolean;
         esModuleInterop?: boolean;
         useDefineForClassFields?: boolean;
+        defines?: MapLike<any>;
+        emitReflection?: boolean;
+        reorderFiles?: boolean;
         [option: string]: CompilerOptionsValue | TsConfigSourceFile | undefined;
     }
     interface WatchOptions {
@@ -3971,6 +3977,7 @@ declare namespace ts {
         createExportDefault(expression: Expression): ExportAssignment;
         createExternalModuleExport(exportName: Identifier): ExportDeclaration;
         restoreOuterExpressions(outerExpression: Expression | undefined, innerExpression: Expression, kinds?: OuterExpressionKinds): Expression;
+        getHelperName(name: string): Identifier;
     }
     interface CoreTransformationContext {
         readonly factory: NodeFactory;
@@ -5343,6 +5350,11 @@ declare namespace ts {
      * @param context A lexical environment context for the visitor.
      */
     function visitEachChild<T extends Node>(node: T | undefined, visitor: Visitor, context: TransformationContext, nodesVisitor?: typeof visitNodes, tokenVisitor?: Visitor): T | undefined;
+    function reorderSourceFiles(program: Program): SortingResult;
+    interface SortingResult {
+        sortedFileNames: string[];
+        circularReferences: string[];
+    }
     function getTsBuildInfoEmitOutputFilePath(options: CompilerOptions): string | undefined;
     function getOutputFileNames(commandLine: ParsedCommandLine, inputFileName: string, ignoreCase: boolean): readonly string[];
     function createPrinter(printerOptions?: PrinterOptions, handlers?: PrintHandlers): Printer;

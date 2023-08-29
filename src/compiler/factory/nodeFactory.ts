@@ -1023,6 +1023,9 @@ export function createNodeFactory(flags: NodeFactoryFlags, baseFactory: BaseNode
         liftToBlock,
         mergeLexicalEnvironment,
         updateModifiers,
+        
+        // Helpers
+        getHelperName,
     };
 
     forEach(nodeFactoryPatchers, fn => fn(factory));
@@ -7034,6 +7037,12 @@ export function createNodeFactory(flags: NodeFactoryFlags, baseFactory: BaseNode
             );
         }
         return variableDeclaration;
+    }
+    
+    // Helpers
+
+    function getHelperName(name: string): Identifier {
+        return setEmitFlags(createIdentifier(name), EmitFlags.HelperName | EmitFlags.AdviseOnEmitNode);
     }
 }
 

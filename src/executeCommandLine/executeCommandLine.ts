@@ -900,15 +900,21 @@ function performCompilation(
         options,
         projectReferences,
         host,
-        configFileParsingDiagnostics: getConfigFileParsingDiagnostics(config)
+        configFileParsingDiagnostics: getConfigFileParsingDiagnostics(config),
     };
     const program = createProgram(programOptions);
     const exitStatus = emitFilesAndReportErrorsAndGetExitStatus(
         program,
         reportDiagnostic,
         s => sys.write(s + sys.newLine),
-        createReportErrorSummary(sys, options)
+        createReportErrorSummary(sys, options),
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        options,
     );
+    options.reorderFiles
     reportStatistics(sys, program, /*builder*/ undefined);
     cb(program);
     return sys.exit(exitStatus);

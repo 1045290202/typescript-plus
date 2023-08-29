@@ -1845,6 +1845,11 @@ export interface VariableDeclaration extends NamedDeclaration, JSDocContainer {
     readonly exclamationToken?: ExclamationToken;  // Optional definite assignment assertion
     readonly type?: TypeNode;                      // Optional type annotation
     readonly initializer?: Expression;             // Optional initializer
+    
+    /* @internal */
+    callerList?: string[];
+    /* @internal */
+    delayInitializerList?: Expression[];
 }
 
 /** @internal */
@@ -3505,6 +3510,7 @@ export interface ClassLikeDeclarationBase extends NamedDeclaration, JSDocContain
     readonly typeParameters?: NodeArray<TypeParameterDeclaration>;
     readonly heritageClauses?: NodeArray<HeritageClause>;
     readonly members: NodeArray<ClassElement>;
+    typeNames?: string[];
 }
 
 export interface ClassDeclaration extends ClassLikeDeclarationBase, DeclarationStatement {
@@ -7131,6 +7137,11 @@ export interface CompilerOptions {
     esModuleInterop?: boolean;
     /** @internal */ showConfig?: boolean;
     useDefineForClassFields?: boolean;
+    
+    /* extra options */
+    defines?: MapLike<any>;
+    emitReflection?: boolean;
+    reorderFiles?: boolean;
 
     [option: string]: CompilerOptionsValue | TsConfigSourceFile | undefined;
 }
@@ -8026,6 +8037,8 @@ export interface EmitHost extends ScriptReferenceHost, ModuleSpecifierResolution
     useCaseSensitiveFileNames(): boolean;
     getCurrentDirectory(): string;
 
+    /* @internal */
+    getTypeChecker?(): TypeChecker;
     getLibFileFromReference(ref: FileReference): SourceFile | undefined;
 
     getCommonSourceDirectory(): string;
@@ -8945,6 +8958,9 @@ export interface NodeFactory {
      */
     cloneNode<T extends Node | undefined>(node: T): T;
     /** @internal */ updateModifiers<T extends HasModifiers>(node: T, modifiers: readonly Modifier[] | ModifierFlags | undefined): T;
+    
+    // Helpers
+    getHelperName(name: string): Identifier;
 }
 
 /** @internal */

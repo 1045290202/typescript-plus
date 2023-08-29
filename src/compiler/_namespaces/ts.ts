@@ -31,6 +31,7 @@ export * from "../symbolWalker";
 export * from "../checker";
 export * from "../visitorPublic";
 export * from "../sourcemap";
+export * from "../sorting";
 export * from "../transformers/utilities";
 export * from "../transformers/destructuring";
 export * from "../transformers/taggedTemplate";

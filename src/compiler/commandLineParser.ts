@@ -1538,6 +1538,25 @@ const commandOptionsWithoutBuild: CommandLineOption[] = [
         type: "string",
         defaultValueDescription: undefined,
     },
+    
+    // extra options
+    {
+        // this option can only be specified in tsconfig.json
+        // use type = object to copy the value as-is
+        name: "defines",
+        type: "object",
+        isTSConfigOnly: true,
+    },
+    {
+        name: "emitReflection",
+        type: "boolean",
+        defaultValueDescription: false,
+    },
+    {
+        name: "reorderFiles",
+        type: "boolean",
+        defaultValueDescription: false,
+    },
 ];
 
 /** @internal */

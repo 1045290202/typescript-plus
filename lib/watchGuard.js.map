@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": ["../../src/watchGuard/watchGuard.ts"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA,SAAoB;AAEpB,IAAI,QAAQ,KAAK,SAAS,GAAG;AACzB,UAAQ,KAAK,CAAC;AAClB;AACA,IAAM,gBAAgB,QAAQ,KAAK,CAAC;AAMpC,IAAI;AACA,QAAM,UAAa,SAAM,eAAe,EAAE,WAAW,KAAK,GAAG,OAAO,CAAC,EAAE;AACvE,UAAQ,MAAM;AAClB,SACM,GAAN;AAAmB;AACnB,QAAQ,KAAK,CAAC;",
+  "names": []
+}
